@@ -111,4 +111,8 @@ This project is licensed under the [MIT License](LICENSE).
 
 ---
 
+<<<<<<< HEAD
 **Built with ❤️ by [@swordboom](https://github.com/swordboom)**
+=======
+**Built with ❤️ by [@swordboom](https://github.com/swordboom)**
+>>>>>>> cdf6bdd934f6d3e5eaa3fb19f58a38554b185121
