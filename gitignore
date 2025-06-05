@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+.venv/
+venv/
+*.log
+
+# VS Code
+.vscode/
+
+# ChromeDriver downloads
+chromedriver
+chromedriver.exe
+
+# System
+.DS_Store
+Thumbs.db
+
+# Uploads and output files
+uploads/
+processed/
+enriched_*.csv
+
+# Model and cache
+models/*.pkl

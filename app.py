@@ -4,8 +4,6 @@ from werkzeug.utils import secure_filename
 from lead_generator_tool import enrich_leads
 
 app = Flask(__name__)
-
-# In-memory buffer to store latest enriched CSV content
 enriched_csv_buffer = io.StringIO()
 
 @app.route('/')
@@ -30,14 +28,13 @@ def upload_json():
     enriched_csv_buffer = io.StringIO()
     writer = None
 
-    # Enrich in memory
     for row in reader:
         if writer is None:
-            fieldnames = list(row.keys()) + ['Email Valid', 'Tech Stack', 'Engagement Score']
+            fieldnames = list(row.keys()) + ['Email Used', 'Tech Stack', 'Engagement Score', 'ML Deliverability']
             writer = csv.DictWriter(enriched_csv_buffer, fieldnames=fieldnames)
             writer.writeheader()
 
-        enriched = enrich_leads([row])  # Pass single row as list
+        enriched = enrich_leads([row])
         enriched_rows.extend(enriched)
         writer.writerow(enriched[0])
 
