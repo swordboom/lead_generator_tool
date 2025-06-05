@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lead Generator Tool</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <main class="wrapper">
+        <div class="container">
+            <h1>Lead Generator Tool</h1>
+            <p>Upload your raw lead CSV to enrich it with email validation, tech stack info, and LinkedIn engagement scores.</p>
+            <input type="file" id="leadfile" />
+            <button onclick="uploadAndProcess()">Enrich Leads</button>
+
+            <div id="loading" style="display: none;">
+                <p>🔍 Processing leads... hang tight!</p>
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <!-- Output Area -->
+        <div id="output-container">
+            <div id="output"></div>
+            <button id="downloadBtn" style="display: none; margin-top: 20px;" onclick="downloadCSV()">⬇️ Download CSV</button>
+        </div>
+    </main>
+
+    <script>
+        function uploadAndProcess() {
+            const fileInput = document.getElementById('leadfile');
+            const file = fileInput.files[0];
+            if (!file) {
+                alert("Please choose a file.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("leadfile", file);
+
+            document.getElementById("loading").style.display = "block";
+            document.getElementById("output").innerHTML = "";
+            document.getElementById("downloadBtn").style.display = "none";
+
+            fetch("/upload-json", {
+                method: "POST",
+                body: formData,
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("loading").style.display = "none";
+                showCSVData(data);
+                document.getElementById("downloadBtn").style.display = "inline-block";
+            })
+            .catch(err => {
+                document.getElementById("loading").style.display = "none";
+                alert("Something went wrong.");
+                console.error(err);
+            });
+        }
+
+        function showCSVData(data) {
+            if (!data || data.length === 0) {
+                document.getElementById("output").innerHTML = "<p>No data returned.</p>";
+                return;
+            }
+
+            document.getElementById("output-container").style.display = "block";
+
+            let html = "<table><thead><tr>";
+            for (let key of Object.keys(data[0])) {
+                html += `<th>${key}</th>`;
+            }
+            html += "</tr></thead><tbody>";
+
+            for (let row of data) {
+                html += "<tr>";
+                for (let val of Object.values(row)) {
+                    html += `<td>${val}</td>`;
+                }
+                html += "</tr>";
+            }
+
+            html += "</tbody></table>";
+            document.getElementById("output").innerHTML = html;
+        }
+
+        function downloadCSV() {
+            window.location.href = "/download";
+        }
+    </script>
+</body>
+</html>
